@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  timezone  String   @default("UTC")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  habits Habit[]
+
+  @@map("users")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  color     String
+  icon      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  habits Habit[]
+
+  @@map("categories")
+}
+
+model Habit {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  categoryId  String?  @map("category_id")
+  title       String
+  description String?
+  frequency   String
+  targetDays  Json?    @map("target_days")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  logs  HabitLog[]
+
+  @@index([userId])
+  @@index([categoryId])
+  @@index([isActive])
+  @@map("habits")
+}
+
+model HabitLog {
+  id        String   @id @default(uuid())
+  habitId   String   @map("habit_id")
+  date      DateTime @db.Date
+  completed Boolean  @default(false)
+  note      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  habit Habit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, date])
+  @@index([date])
+  @@map("habit_logs")
+}
