@@ -10,7 +10,7 @@ app.use('/api/auth', authRoutes);
 app.use(errorHandler);
 
 describe('Auth Integration Tests', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await clearDatabase();
   });
 
@@ -44,6 +44,12 @@ describe('Auth Integration Tests', () => {
     });
 
     it('should return 400 for duplicate email', async () => {
+      await request(app).post('/api/auth/register').send({
+        email: 'integration@test.com',
+        password: 'password123',
+        name: 'Test User',
+      });
+
       const response = await request(app).post('/api/auth/register').send({
         email: 'integration@test.com',
         password: 'password123',
@@ -56,6 +62,14 @@ describe('Auth Integration Tests', () => {
   });
 
   describe('POST /api/auth/login', () => {
+    beforeEach(async () => {
+      await request(app).post('/api/auth/register').send({
+        email: 'integration@test.com',
+        password: 'password123',
+        name: 'Integration Test',
+      });
+    });
+
     it('should login existing user', async () => {
       const response = await request(app).post('/api/auth/login').send({
         email: 'integration@test.com',
