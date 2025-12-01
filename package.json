@@ -7,6 +7,7 @@
     "dev": "ts-node src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
+    "start:prod": "node dist/index.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
@@ -17,8 +18,8 @@
     "test:unit": "jest unit",
     "test:integration": "jest integration",
     "test:e2e": "jest e2e",
-    "prepare": "husky",
-    "test:mutation": "stryker run"
+    "test:mutation": "stryker run",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -36,10 +37,14 @@
     "url": "https://github.com/Freazg/habit-tracker/issues"
   },
   "homepage": "https://github.com/Freazg/habit-tracker#readme",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "devDependencies": {
-    "@stryker-mutator/core": "^9.4.0",
-    "@stryker-mutator/jest-runner": "^9.4.0",
-    "@stryker-mutator/typescript-checker": "^9.4.0",
+    "@stryker-mutator/core": "^9.3.0",
+    "@stryker-mutator/jest-runner": "^9.3.0",
+    "@stryker-mutator/typescript-checker": "^9.3.0",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
