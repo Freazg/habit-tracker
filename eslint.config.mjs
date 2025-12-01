@@ -17,6 +17,15 @@ export default [
       globals: {
         console: 'readonly',
         process: 'readonly',
+        module: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        jest: 'readonly',
       },
     },
     plugins: {
@@ -32,6 +41,14 @@ export default [
       '@typescript-eslint/explicit-function-return-type': 'warn',
       '@typescript-eslint/no-explicit-any': 'error',
       'no-console': 'off',
+    },
+  },
+  {
+    files: ['**/*.js'],
+    languageOptions: {
+      globals: {
+        module: 'readonly',
+      },
     },
   },
   {
