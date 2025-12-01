@@ -8,3 +8,8 @@ coverage
 *.swo
 .vscode
 .idea
+
+/src/generated/prisma
+
+# stryker temp files
+.stryker-tmp
