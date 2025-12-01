@@ -1,54 +1,45 @@
+import prisma from '../utils/prisma.util';
 import { Habit, CreateHabitDto, UpdateHabitDto } from '../models/habit.model';
-import { v4 as uuidv4 } from 'uuid';
 
 class HabitRepository {
-  private habits: Habit[] = [];
-
   async findAll(): Promise<Habit[]> {
-    return this.habits;
+    return prisma.habit.findMany() as Promise<Habit[]>;
   }
 
-  async findById(id: string): Promise<Habit | undefined> {
-    return this.habits.find((habit) => habit.id === id);
+  async findById(id: string): Promise<Habit | null> {
+    return prisma.habit.findUnique({ where: { id } }) as Promise<Habit | null>;
   }
 
   async findByUserId(userId: string): Promise<Habit[]> {
-    return this.habits.filter((habit) => habit.userId === userId);
+    return prisma.habit.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    }) as Promise<Habit[]>;
   }
 
   async create(userId: string, data: CreateHabitDto): Promise<Habit> {
-    const habit: Habit = {
-      id: uuidv4(),
-      userId,
-      categoryId: data.categoryId,
-      title: data.title,
-      description: data.description,
-      frequency: data.frequency,
-      targetDays: data.targetDays,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.habits.push(habit);
-    return habit;
+    return prisma.habit.create({
+      data: {
+        userId,
+        categoryId: data.categoryId ?? null,
+        title: data.title,
+        description: data.description ?? null,
+        frequency: data.frequency,
+        targetDays: data.targetDays ?? undefined,
+        isActive: true,
+      },
+    }) as Promise<Habit>;
   }
 
-  async update(id: string, data: UpdateHabitDto): Promise<Habit | undefined> {
-    const index = this.habits.findIndex((habit) => habit.id === id);
-    if (index === -1) return undefined;
-
-    this.habits[index] = {
-      ...this.habits[index],
-      ...data,
-      updatedAt: new Date(),
-    };
-    return this.habits[index];
+  async update(id: string, data: UpdateHabitDto): Promise<Habit | null> {
+    return prisma.habit.update({
+      where: { id },
+      data,
+    }) as Promise<Habit>;
   }
 
   async delete(id: string): Promise<boolean> {
-    const index = this.habits.findIndex((habit) => habit.id === id);
-    if (index === -1) return false;
-    this.habits.splice(index, 1);
+    await prisma.habit.delete({ where: { id } });
     return true;
   }
 }
