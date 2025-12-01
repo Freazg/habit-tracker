@@ -3,11 +3,11 @@ export type HabitFrequency = 'daily' | 'weekly';
 export interface Habit {
   id: string;
   userId: string;
-  categoryId?: string;
+  categoryId: string | null;
   title: string;
-  description?: string;
-  frequency: HabitFrequency;
-  targetDays?: number[];
+  description: string | null;
+  frequency: string;
+  targetDays: unknown;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;

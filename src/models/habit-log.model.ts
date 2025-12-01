@@ -1,9 +1,9 @@
 export interface HabitLog {
   id: string;
   habitId: string;
-  date: string;
+  date: Date;
   completed: boolean;
-  note?: string;
+  note: string | null;
   createdAt: Date;
 }
 
