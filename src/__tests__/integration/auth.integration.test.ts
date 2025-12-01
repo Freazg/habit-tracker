@@ -45,13 +45,13 @@ describe('Auth Integration Tests', () => {
 
     it('should return 400 for duplicate email', async () => {
       await request(app).post('/api/auth/register').send({
-        email: 'integration@test.com',
+        email: 'duplicate@test.com',
         password: 'password123',
         name: 'Test User',
       });
 
       const response = await request(app).post('/api/auth/register').send({
-        email: 'integration@test.com',
+        email: 'duplicate@test.com',
         password: 'password123',
         name: 'Test User',
       });
@@ -62,28 +62,32 @@ describe('Auth Integration Tests', () => {
   });
 
   describe('POST /api/auth/login', () => {
-    beforeEach(async () => {
-      await request(app).post('/api/auth/register').send({
-        email: 'integration@test.com',
-        password: 'password123',
-        name: 'Integration Test',
-      });
-    });
-
     it('should login existing user', async () => {
+      await request(app).post('/api/auth/register').send({
+        email: 'login@test.com',
+        password: 'password123',
+        name: 'Login Test',
+      });
+
       const response = await request(app).post('/api/auth/login').send({
-        email: 'integration@test.com',
+        email: 'login@test.com',
         password: 'password123',
       });
 
       expect(response.status).toBe(200);
-      expect(response.body.user.email).toBe('integration@test.com');
+      expect(response.body.user.email).toBe('login@test.com');
       expect(response.body.token).toBeDefined();
     });
 
     it('should return 401 for invalid credentials', async () => {
+      await request(app).post('/api/auth/register').send({
+        email: 'wrong@test.com',
+        password: 'password123',
+        name: 'Wrong Test',
+      });
+
       const response = await request(app).post('/api/auth/login').send({
-        email: 'integration@test.com',
+        email: 'wrong@test.com',
         password: 'wrong-password',
       });
 
