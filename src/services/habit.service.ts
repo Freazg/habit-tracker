@@ -9,7 +9,7 @@ class HabitService {
 
   async getById(id: string, userId: string): Promise<Habit> {
     const habit = await habitRepository.findById(id);
-    if (!habit) {
+    if (habit === null) {
       throw new Error('Habit not found');
     }
     if (habit.userId !== userId) {
@@ -21,7 +21,7 @@ class HabitService {
   async create(userId: string, data: CreateHabitDto): Promise<Habit> {
     if (data.categoryId) {
       const category = await categoryRepository.findById(data.categoryId);
-      if (!category) {
+      if (category === null) {
         throw new Error('Category not found');
       }
     }
@@ -42,7 +42,7 @@ class HabitService {
 
     if (data.categoryId) {
       const category = await categoryRepository.findById(data.categoryId);
-      if (!category) {
+      if (category === null) {
         throw new Error('Category not found');
       }
     }
@@ -56,7 +56,7 @@ class HabitService {
     }
 
     const updated = await habitRepository.update(id, data);
-    if (!updated) {
+    if (updated === null) {
       throw new Error('Failed to update habit');
     }
     return updated;

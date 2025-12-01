@@ -3,12 +3,13 @@ import { Category } from '../models/category.model';
 
 class CategoryService {
   async getAll(): Promise<Category[]> {
+    await categoryRepository.seed();
     return categoryRepository.findAll();
   }
 
   async getById(id: string): Promise<Category> {
     const category = await categoryRepository.findById(id);
-    if (!category) {
+    if (category === null) {
       throw new Error('Category not found');
     }
     return category;

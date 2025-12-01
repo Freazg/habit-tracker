@@ -6,7 +6,7 @@ import { generateToken } from '../utils/jwt.util';
 class AuthService {
   async register(data: CreateUserDto): Promise<{ user: UserResponse; token: string }> {
     const existingUser = await userRepository.findByEmail(data.email);
-    if (existingUser) {
+    if (existingUser !== null) {
       throw new Error('User with this email already exists');
     }
 
@@ -32,7 +32,7 @@ class AuthService {
 
   async login(email: string, password: string): Promise<{ user: UserResponse; token: string }> {
     const user = await userRepository.findByEmail(email);
-    if (!user) {
+    if (user === null) {
       throw new Error('Invalid credentials');
     }
 

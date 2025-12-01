@@ -5,7 +5,7 @@ import { CreateHabitLogDto, UpdateHabitLogDto, HabitLog } from '../models/habit-
 class LogService {
   async getByHabitId(habitId: string, userId: string): Promise<HabitLog[]> {
     const habit = await habitRepository.findById(habitId);
-    if (!habit) {
+    if (habit === null) {
       throw new Error('Habit not found');
     }
     if (habit.userId !== userId) {
@@ -16,7 +16,7 @@ class LogService {
 
   async create(data: CreateHabitLogDto, userId: string): Promise<HabitLog> {
     const habit = await habitRepository.findById(data.habitId);
-    if (!habit) {
+    if (habit === null) {
       throw new Error('Habit not found');
     }
     if (habit.userId !== userId) {
@@ -24,12 +24,12 @@ class LogService {
     }
 
     const existing = await habitLogRepository.findByHabitAndDate(data.habitId, data.date);
-    if (existing) {
+    if (existing !== null) {
       const updated = await habitLogRepository.update(existing.id, {
         completed: data.completed,
         note: data.note,
       });
-      if (!updated) {
+      if (updated === null) {
         throw new Error('Failed to update log');
       }
       return updated;
@@ -40,17 +40,17 @@ class LogService {
 
   async update(id: string, userId: string, data: UpdateHabitLogDto): Promise<HabitLog> {
     const log = await habitLogRepository.findById(id);
-    if (!log) {
+    if (log === null) {
       throw new Error('Log not found');
     }
 
     const habit = await habitRepository.findById(log.habitId);
-    if (!habit || habit.userId !== userId) {
+    if (habit === null || habit.userId !== userId) {
       throw new Error('Access denied');
     }
 
     const updated = await habitLogRepository.update(id, data);
-    if (!updated) {
+    if (updated === null) {
       throw new Error('Failed to update log');
     }
     return updated;
@@ -58,12 +58,12 @@ class LogService {
 
   async delete(id: string, userId: string): Promise<void> {
     const log = await habitLogRepository.findById(id);
-    if (!log) {
+    if (log === null) {
       throw new Error('Log not found');
     }
 
     const habit = await habitRepository.findById(log.habitId);
-    if (!habit || habit.userId !== userId) {
+    if (habit === null || habit.userId !== userId) {
       throw new Error('Access denied');
     }
 
